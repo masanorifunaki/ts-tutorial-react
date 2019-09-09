@@ -20,14 +20,6 @@ module.exports = {
     SharedArrayBuffer: 'readonly',
     '__DEV__': true
   },
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    project: './tsconfig.json',
-    sourceType: 'module',
-  },
   plugins: [
     '@typescript-eslint',
     'jest',
@@ -58,7 +50,6 @@ module.exports = {
     '@typescript-eslint/explicit-member-accessibility': 'off',
     indent: 'off',
     '@typescript-eslint/indent': 'off',
-    '@typescript-eslint/no-unnecessary-type-assertion': 'error',
 
     // prefer-arrow
     'prefer-arrow/prefer-arrow-functions': [
