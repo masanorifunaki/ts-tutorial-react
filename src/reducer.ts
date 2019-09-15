@@ -1,39 +1,51 @@
 import { Reducer } from 'redux';
-import { CounterAction, CounterActionType } from './actions/counter';
+import { AxiosError } from 'axios';
 
-export interface CounterState {
-  count: number;
+import { GithubAction } from './actions/github';
+import * as ActionType from './actions/githubConstants';
+import { User } from './services/github/models';
+
+export interface GithubState {
+  users: User[];
+  isLoading: boolean;
+  error?: AxiosError | null;
 }
 
-export const initialState: CounterState = { count: 0 };
+export const initialState: GithubState = {
+  users: [],
+  isLoading: false,
+};
 
-const counterReducer: Reducer<CounterState, CounterAction> = (
-  state: CounterState = initialState,
-  action: CounterAction,
-): CounterState => {
+const githubReducer: Reducer<GithubState, GithubAction> = (
+  state: GithubState = initialState,
+  action: GithubAction,
+): GithubState => {
   switch (action.type) {
-    case CounterActionType.ADD:
+    case ActionType.GET_MEMBERS_START:
       return {
         ...state,
-        count: state.count + (action.amount || 0),
+        users: [],
+        isLoading: true,
       };
-    case CounterActionType.DECREMENT:
+    case ActionType.GET_MEMBERS_SUCCEED:
       return {
         ...state,
-        count: state.count - 1,
+        users: action.payload.result.users,
+        isLoading: false,
       };
-    case CounterActionType.INCREMENT:
+    case ActionType.GET_MEMBERS_FAIL:
       return {
         ...state,
-        count: state.count + 1,
+        isLoading: false,
+        error: action.payload.error,
       };
     default: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const _: never = action.type;
+      const _: never = action;
 
       return state;
     }
   }
 };
 
-export default counterReducer;
+export default githubReducer;

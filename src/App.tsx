@@ -1,18 +1,27 @@
 import React, { FC } from 'react';
+import { Helmet } from 'react-helmet';
+import { Redirect, Route, Switch } from 'react-router';
 
-import ColorfulBeads from './containers/ColorfulBeads';
-import Counter from './containers/Counter';
+import Members from './containers/Members';
 
 import './App.css';
 
+const title = 'いろんな会社のメンバー';
+
 const App: FC = () => (
-  <div className="container">
-    <header>
-      <h1>ビーズカウンター</h1>
+  <>
+    <Helmet htmlAttributes={{ lang: 'ja' }}>
+      <title>{title}</title>
+    </Helmet>
+
+    <header className="App-header">
+      <h1>{title}</h1>
     </header>
-    <Counter />
-    <ColorfulBeads />
-  </div>
+    <Switch>
+      <Route path="/:companyName/members" component={Members} />
+      <Redirect to="/" />
+    </Switch>
+  </>
 );
 
 export default App;
