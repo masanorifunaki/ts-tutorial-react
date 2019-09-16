@@ -50,6 +50,12 @@ module.exports = {
     '@typescript-eslint/explicit-member-accessibility': 'off',
     indent: 'off',
     '@typescript-eslint/indent': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '[Rr]eact'
+      }
+    ],
 
     // prefer-arrow
     'prefer-arrow/prefer-arrow-functions': [
