@@ -1,6 +1,8 @@
 import axios from 'axios';
+import camelcaseKeys from 'camelcase-keys';
+import qs from 'qs';
 
-import { User } from './models';
+import { User, Repository } from './models';
 
 interface ApiConfig {
   baseURL: string;
@@ -12,13 +14,22 @@ const DEFAULT_API_CONFIG: ApiConfig = {
   timeout: 7000,
 };
 
-export const getMembersFactory = (optionConfig?: ApiConfig) => {
+const createAxiosInstance = (optionConfig?: ApiConfig) => {
   const config = {
     ...DEFAULT_API_CONFIG,
     ...optionConfig,
   };
-
   const instance = axios.create(config);
+  instance.interceptors.response.use(res => ({
+    ...res,
+    data: camelcaseKeys(res.data, { deep: true }),
+  }));
+
+  return instance;
+};
+
+export const getMembersFactory = (optionConfig?: ApiConfig) => {
+  const instance = createAxiosInstance(optionConfig);
 
   const getMembers = async (organizationName: string) => {
     try {
@@ -33,4 +44,26 @@ export const getMembersFactory = (optionConfig?: ApiConfig) => {
   };
 
   return getMembers;
+};
+
+export const searchRepositoriesFactory = (optionConfig?: ApiConfig) => {
+  const instance = createAxiosInstance(optionConfig);
+
+  const searchRepositories = async (
+    q: string,
+    sort?: 'stars' | 'forks' | 'updated' | '',
+  ) => {
+    try {
+      const params = qs.stringify({ q, sort });
+      const response = await instance.get(`/search/repositories?${params}`);
+      const repositories: Repository[] = response.data.items;
+
+      return repositories;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
+  return searchRepositories;
 };

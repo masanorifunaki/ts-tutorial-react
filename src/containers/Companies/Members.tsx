@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import Members, { MembersProps } from '../components/Members';
-import { User } from '../services/github/models';
-import { GithubState } from '../reducer';
-import { getMembers } from '../actions/github';
+import CompanyMembers, {
+  CompanyMembersProps,
+} from '../../components/Companies/Members';
+import { User } from '../../services/github/models';
+import { GithubState } from '../../reducer';
+import { getMembers, GetMembersParams } from '../../actions/github';
 
 interface StateProps {
   users: User[];
@@ -14,10 +16,10 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  getMembersStart: (companyName: string) => void;
+  getMembersStart: (params: GetMembersParams) => void;
 }
 
-type EnhancedMembersProps = MembersProps &
+type EnhancedMembersProps = CompanyMembersProps &
   StateProps &
   DispatchProps &
   RouteComponentProps<{ companyName: string }>;
@@ -30,8 +32,7 @@ const mapStateToProps = (state: GithubState): StateProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
-      getMembersStart: (companyName: string) =>
-        getMembers.start({ companyName }),
+      getMembersStart: params => getMembers.start(params),
     },
     dispatch,
   );
@@ -45,11 +46,15 @@ const MembersContainer: FC<EnhancedMembersProps> = ({
   const { companyName } = match.params;
 
   useEffect(() => {
-    getMembersStart(companyName);
+    getMembersStart({ companyName });
   }, []);
 
   return (
-    <Members companyName={companyName} users={users} isLoading={isLoading} />
+    <CompanyMembers
+      companyName={companyName}
+      users={users}
+      isLoading={isLoading}
+    />
   );
 };
 
