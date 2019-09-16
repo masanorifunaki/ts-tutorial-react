@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Card, Icon, Image } from 'semantic-ui-react';
-import { format } from 'date-fns';
 
 import Spinner from '../common/Spinner';
 import { Repository } from '../../services/github/models';
